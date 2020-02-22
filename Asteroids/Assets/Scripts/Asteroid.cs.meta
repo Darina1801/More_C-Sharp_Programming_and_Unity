@@ -3,7 +3,10 @@ guid: e65017d94553be54db25721c8401070a
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - asteroid_red: {fileID: 21300000, guid: 3a3b17289fc753049bdf993a0f8abb9e, type: 3}
+  - asteroid_blue: {fileID: 21300000, guid: 49a3178167f434f4babf78827b4b91b8, type: 3}
+  - asteroid_grey: {fileID: 21300000, guid: 88d825f14e4e36249918e5e5bfe68393, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

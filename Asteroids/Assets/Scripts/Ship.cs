@@ -1,16 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// A ship
 /// </summary>
 public class Ship : MonoBehaviour
 {
-	// explosion support
+	// fire support
+	[SerializeField] 
+	GameObject prefabBullet;
 	[SerializeField]
-	GameObject prefabExplosion;
+	GameObject HUD;
 
 	// thrust and rotation support
 	Rigidbody2D rb2D;
@@ -48,6 +47,13 @@ public class Ship : MonoBehaviour
             thrustDirection.x = Mathf.Cos(zRotation);
             thrustDirection.y = Mathf.Sin(zRotation);
         }
+
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+	        GameObject bullet = Instantiate<GameObject>(prefabBullet, gameObject.transform.position, Quaternion.identity);
+	        bullet.GetComponent<Bullet>().ApplyForce(thrustDirection);
+			AudioManager.Play(AudioClipName.PlayerShot);
+        }
 	}
 
     /// <summary>
@@ -66,9 +72,10 @@ public class Ship : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
 		GameObject astroid = GameObject.FindWithTag("Asteroid");
-		if (astroid != null)
+		if (collision.gameObject.tag == "Asteroid")
 		{
-			//Instantiate<GameObject>(prefabExplosion, gameObject.transform.position, Quaternion.identity);
+			AudioManager.Play(AudioClipName.PlayerDeath);
+			HUD.GetComponent<HUD>().StopGameTimer();
 			Destroy(gameObject);
 		}
     }

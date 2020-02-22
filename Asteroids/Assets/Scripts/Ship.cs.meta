@@ -1,10 +1,11 @@
 fileFormatVersion: 2
 guid: 9dd5196a64391c041bf9e395491d83e6
-timeCreated: 1499630312
-licenseType: Free
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - prefabBullet: {fileID: 6699376892137371362, guid: dc10ed9ce3e73994a9a164fa1499df46,
+      type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
