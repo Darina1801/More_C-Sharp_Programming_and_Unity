@@ -1,79 +1,60 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
+/// <summary>
+/// A ship
+/// </summary>
 public class Ship : MonoBehaviour
 {
-	Vector3 position;
+    // thrust and rotation support
+    Rigidbody2D rb2D;
+    Vector2 thrustDirection = new Vector2(1, 0);
+    const float ThrustForce = 10;
+    const float RotateDegreesPerSecond = 180;
 
-	Rigidbody2D shipRigidbody;
-	private Vector3 thrustDirection = new Vector3(1, 0, 0);
-	private const int ThrustForce = 5;
-
-	private CircleCollider2D shipCollider;
-	private float shipColliderRadius;
-
-	private const int RotateDegreesPerSecond = 10;
-
-	// Start is called before the first frame update
+	/// <summary>
+	/// Use this for initialization
+	/// </summary>
 	void Start()
 	{
-		shipRigidbody = GetComponent<Rigidbody2D>();
-		shipCollider = GetComponent<CircleCollider2D>();
-		shipColliderRadius = shipCollider.radius;
+		// saved for efficiency
+        rb2D = GetComponent<Rigidbody2D>();
 	}
-
-	void FixedUpdate()
-	{
-		position = transform.position;
-		if (Input.GetAxis("Thrust") != 0)
-		{
-			shipRigidbody.AddForce(position + ThrustForce * thrustDirection * Time.deltaTime);
-		}
-	}
-
-
-	void OnBecameInvisible()
-	{
-		if (position.x - shipColliderRadius <= ScreenUtils.ScreenLeft)
-		{
-			position.x = ScreenUtils.ScreenRight + shipColliderRadius;
-		}
-
-		else if (position.x + shipColliderRadius >= ScreenUtils.ScreenRight)
-		{
-			position.x = ScreenUtils.ScreenLeft - shipColliderRadius;
-		}
-
-		else if (position.y + shipColliderRadius >= ScreenUtils.ScreenTop)
-		{
-			position.y = ScreenUtils.ScreenBottom - shipColliderRadius;
-		}
-
-		else if (position.y - shipColliderRadius <= ScreenUtils.ScreenBottom)
-		{
-			position.y = ScreenUtils.ScreenTop + shipColliderRadius;
-		}
-
-		transform.position = position;
-	}
-
-	//Update is called once per frame
+	
+	/// <summary>
+	/// Update is called once per frame
+	/// </summary>
 	void Update()
 	{
-		float rotationInput = Input.GetAxis("Rotate");
-		if (rotationInput != 0)
-		{
-			float rotationAmount = RotateDegreesPerSecond * Time.deltaTime;
-			if (rotationInput < 0)
-			{
-				rotationAmount *= -1;
-			}
+        // check for rotation input
+        float rotationInput = Input.GetAxis("Rotate");
+        if (rotationInput != 0) {
 
-			transform.Rotate(Vector3.forward, rotationAmount);
-		}
-		thrustDirection.x = Mathf.Cos(transform.eulerAngles.z * Mathf.PI / 180);
-		thrustDirection.y = Mathf.Sin(transform.eulerAngles.z * Mathf.PI / 180);
+            // calculate rotation amount and apply rotation
+            float rotationAmount = RotateDegreesPerSecond * Time.deltaTime;
+            if (rotationInput < 0) {
+                rotationAmount *= -1;
+            }
+            transform.Rotate(Vector3.forward, rotationAmount);
 
-		position.x += thrustDirection.x;
-		position.y += thrustDirection.y;
+            // change thrust direction to match ship rotation
+            float zRotation = transform.eulerAngles.z * Mathf.Deg2Rad;
+            thrustDirection.x = Mathf.Cos(zRotation);
+            thrustDirection.y = Mathf.Sin(zRotation);
+        }
 	}
+
+    /// <summary>
+    /// FixedUpdate is called 50 times per second
+    /// </summary>
+    void FixedUpdate()
+    {
+        // thrust as appropriate
+        if (Input.GetAxis("Thrust") != 0)
+        {
+            rb2D.AddForce(ThrustForce * thrustDirection,
+                ForceMode2D.Force);
+        }
+    }
 }
