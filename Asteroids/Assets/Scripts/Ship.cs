@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 /// <summary>
@@ -7,8 +8,12 @@ using UnityEngine;
 /// </summary>
 public class Ship : MonoBehaviour
 {
-    // thrust and rotation support
-    Rigidbody2D rb2D;
+	// explosion support
+	[SerializeField]
+	GameObject prefabExplosion;
+
+	// thrust and rotation support
+	Rigidbody2D rb2D;
     Vector2 thrustDirection = new Vector2(1, 0);
     const float ThrustForce = 10;
     const float RotateDegreesPerSecond = 180;
@@ -56,5 +61,15 @@ public class Ship : MonoBehaviour
             rb2D.AddForce(ThrustForce * thrustDirection,
                 ForceMode2D.Force);
         }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+		GameObject astroid = GameObject.FindWithTag("Asteroid");
+		if (astroid != null)
+		{
+			//Instantiate<GameObject>(prefabExplosion, gameObject.transform.position, Quaternion.identity);
+			Destroy(gameObject);
+		}
     }
 }
